@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -6,53 +6,53 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 
-    internal static class ErweiterungsMethoden
+internal static class ErweiterungsMethoden
+{
+    public static string NummerZuText(this double num, bool mitZeichen = true, bool upperCase = false)
     {
-        public static string NummerZuText(this double num, bool mitZeichen = true, bool upperCase=false)
-        {
-            var i = num.ToString(CultureInfo.InvariantCulture);
+        var i = num.ToString(CultureInfo.InvariantCulture);
 
-            return Vorbereiten(i, mitZeichen, upperCase);
-        }
-
-        public static string NummerZuText(this string num, bool mitZeichen = true, bool upperCase = false)
-        {
-            return Vorbereiten(num, mitZeichen, upperCase);
-        }
-
-        private static string Vorbereiten(string s, bool mitZeichen = true, bool upperCase = false)
-        {
-            var regex = new Regex(@"(\d+)([,\.]{0,1})(\d{0,2})");
-            var match = regex.Match(s);
-            if (!match.Success) return !match.Success ? " FEHLER " : match.Value;
-
-            var vorne = Convert.ToInt64(match.Groups[1].Value);
-            var zeichen = match.Groups[2].Value;
-            var hinten = match.Groups[3].Value;
-
-            var wortevorne = vorne.ToText();
-            var wortehinten = hinten.ToText(true);
-
-            var returnString = wortevorne + (mitZeichen ? (zeichen == "," ? " Komma " : (wortehinten == "" ? "" : " Punkt ")) : " - ") + (wortehinten != "" ? wortehinten : "");
-
-            return (!upperCase ? returnString : returnString.ToUpper());
-        }
+        return Vorbereiten(i, mitZeichen, upperCase);
     }
 
-    internal static class NumberTextExtensionMethod
+    public static string NummerZuText(this string num, bool mitZeichen = true, bool upperCase = false)
     {
-        public static string ToText(this long num, bool nachkomma = false)
-        {
-            var numberText = new NumberText();
-            return numberText.ToText(num, nachkomma);
-        }
-
-        public static string ToText(this string num, bool nachkomma = false)
-        {
-            var numberText = new NumberText();
-            return numberText.ToText(num, nachkomma);
-        }
+        return Vorbereiten(num, mitZeichen, upperCase);
     }
+
+    private static string Vorbereiten(string s, bool mitZeichen = true, bool upperCase = false)
+    {
+        var regex = new Regex(@"(\d+)([,\.]{0,1})(\d{0,2})");
+        var match = regex.Match(s);
+        if (!match.Success) return !match.Success ? " FEHLER " : match.Value;
+
+        var vorne = Convert.ToInt64(match.Groups[1].Value);
+        var zeichen = match.Groups[2].Value;
+        var hinten = match.Groups[3].Value;
+
+        var wortevorne = vorne.ToText();
+        var wortehinten = hinten.ToText(true);
+
+        var returnString = wortevorne + (mitZeichen ? (zeichen == "," ? " Komma " : (wortehinten == "" ? "" : " Punkt ")) : " - ") + (wortehinten != "" ? wortehinten : "");
+
+        return (!upperCase ? returnString : returnString.ToUpper());
+    }
+}
+
+internal static class NumberTextExtensionMethod
+{
+    public static string ToText(this long num, bool nachkomma = false)
+    {
+        var numberText = new NumberText();
+        return numberText.ToText(num, nachkomma);
+    }
+
+    public static string ToText(this string num, bool nachkomma = false)
+    {
+        var numberText = new NumberText();
+        return numberText.ToText(num, nachkomma);
+    }
+}
 
 internal class NumberText
 {
@@ -152,10 +152,10 @@ internal class NumberText
     {
         if (num <= einheit - 1) return num;
         Einheit = einheit;
-        var basisEinheit = num/einheit;
+        var basisEinheit = num / einheit;
         AppendKleinerTausend(basisEinheit);
         _builderString.AppendFormat("{0} ", _einheitenStrings[einheit]);
-        num = num - (basisEinheit*einheit);
+        num = num - (basisEinheit * einheit);
         Einheit = 0;
 
         return num;
@@ -209,7 +209,7 @@ internal class NumberText
     {
         if (num > 20)
         {
-            var zehner = (num/10)*10;
+            var zehner = (num / 10) * 10;
             string eins = $"{_textStrings[zehner]} ";
             num = num - zehner;
             AppendEinheit(num, eins);
@@ -224,10 +224,10 @@ internal class NumberText
     private long AppendHunderter(long num)
     {
         if (num <= 99) return num;
-        var hunderter = (num/100);
+        var hunderter = (num / 100);
         var s = ReplaceEins(_textStrings[hunderter]);
         _builderString.AppendFormat("{0}hundert ", s);
-        num = num - (hunderter*100);
+        num = num - (hunderter * 100);
         return num;
     }
 
